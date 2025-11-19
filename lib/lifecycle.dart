@@ -22,7 +22,7 @@ class _LifecycleState extends State<Lifecycle> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  step++; // memicu didUpdateWidget pada child
+                  step++;
                 });
               },
               child: const Text("Ubah STEP"),
@@ -30,7 +30,6 @@ class _LifecycleState extends State<Lifecycle> {
 
             const SizedBox(height: 20),
 
-            // ❗ Bungkus child dengan InheritedWidget Anda
             MyInherited(
               counter: step,
               child: AutoWidget(step: step),
@@ -42,9 +41,6 @@ class _LifecycleState extends State<Lifecycle> {
   }
 }
 
-/// -------------------------------------------------------
-/// Child yang memanfaatkan semua lifecycle
-/// -------------------------------------------------------
 class AutoWidget extends StatefulWidget {
   final int step;
 
@@ -61,7 +57,7 @@ class _AutoWidgetState extends State<AutoWidget> {
   @override
   void initState() {
     super.initState();
-    print("🟢 initState dipanggil");
+    print("initState dipanggil");
 
     // timer untuk memicu rebuild
     timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -73,23 +69,23 @@ class _AutoWidgetState extends State<AutoWidget> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     print(
-      "🟡 didChangeDependencies: inherited counter = ${MyInherited.of(context).counter}",
+      "didChangeDependencies: inherited counter = ${MyInherited.of(context).counter}",
     );
   }
 
   @override
   void didUpdateWidget(covariant AutoWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    print("🔵 didUpdateWidget: step ${oldWidget.step} → ${widget.step}");
+    print("didUpdateWidget: step ${oldWidget.step} → ${widget.step}");
 
     if (oldWidget.step != widget.step) {
       setState(() => value = 0);
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    print("🟣 build() dipanggil");
+    print("build() dipanggil");
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -106,20 +102,17 @@ class _AutoWidgetState extends State<AutoWidget> {
   @override
   void deactivate() {
     super.deactivate();
-    print("🟠 deactivate() dipanggil");
+    print("deactivate() dipanggil");
   }
 
   @override
   void dispose() {
-    print("🔴 dispose() dipanggil, timer dihentikan");
+    print(" dispose() dipanggil, timer dihentikan");
     timer?.cancel();
     super.dispose();
   }
 }
 
-/// -------------------------------------------------------
-/// InheritedWidget Anda: TANPA perubahan
-/// -------------------------------------------------------
 class MyInherited extends InheritedWidget {
   final int counter;
   const MyInherited({required this.counter, required super.child, super.key});
